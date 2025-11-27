@@ -5,186 +5,393 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>질문 목록</title>
     <style>
+        :root {
+            /* 로고 무드를 반영한 따뜻한 베이지/골드 */
+            --primary-color: #A68B5E;
+            /* 은은한 배경색 */
+            --background-color: #F8F8F8;
+            /* 깨끗한 배경색 */
+            --card-background: #FFFFFF;
+            /* 얇은 선 색상 */
+            --border-color: #E0E0E0;
+            /* 텍스트 색상 */
+            --text-color: #333333;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        /* --- 네비게이션 바 스타일 --- */
+        .navbar {
+            background: var(--card-background);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+        }
+
+        .navbar-logo {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .navbar-logo:hover {
+            opacity: 0.8;
+        }
+
+        .navbar-menu {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .navbar-menu a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s ease;
+            cursor: pointer;
+        }
+
+        .navbar-menu a:hover {
+            color: var(--primary-color);
+        }
+
+        .navbar-menu a.active {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 4px;
+        }
+
+        .navbar-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        @media (max-width: 768px) {
+            .navbar-menu {
+                display: none;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                right: 0;
+                flex-direction: column;
+                gap: 0;
+                background: var(--card-background);
+                border-bottom: 1px solid var(--border-color);
+                padding: 20px;
+            }
+
+            .navbar-menu.active {
+                display: flex;
+            }
+
+            .navbar-menu a {
+                padding: 12px 0;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .navbar-toggle {
+                display: block;
+            }
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--background-color);
             min-height: 100vh;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .main-content {
             padding: 40px 20px;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 20px;
+            text-align: center;
         }
 
         h1 {
-            color: white;
-            text-align: center;
+            color: var(--primary-color);
+            font-weight: 300;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        .page-subtitle {
+            color: #666;
+            font-size: 16px;
             margin-bottom: 40px;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .button-container {
-            text-align: center;
             margin-bottom: 40px;
+            text-align: center;
         }
 
-        .btn {
-            background-color: #fff;
-            color: #667eea;
+        .btn-create {
             padding: 12px 30px;
+            background: var(--primary-color);
+            color: white;
             border: none;
-            border-radius: 25px;
-            cursor: pointer;
+            border-radius: 4px;
             font-size: 16px;
-            font-weight: bold;
-            transition: all 0.3s ease;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
             text-decoration: none;
             display: inline-block;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        .btn-create:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(166, 139, 94, 0.4);
         }
 
         .questions-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 20px;
         }
 
         .question-card {
-            background: white;
-            border-radius: 15px;
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
             padding: 25px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
         .question-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            border-color: var(--primary-color);
+            box-shadow: 0 5px 15px rgba(166, 139, 94, 0.2);
+            transform: translateY(-2px);
         }
 
         .question-card a {
             text-decoration: none;
             color: inherit;
+            flex-grow: 1;
         }
 
         .question-title {
             font-size: 18px;
-            font-weight: bold;
-            color: #333;
+            font-weight: 600;
+            color: var(--primary-color);
             margin-bottom: 15px;
+            line-height: 1.4;
         }
 
         .options {
             display: flex;
+            flex-direction: column;
             gap: 10px;
             margin-bottom: 15px;
         }
 
         .option {
-            flex: 1;
             padding: 10px;
-            background: #f5f5f5;
-            border-radius: 8px;
+            background: #FFFBF7;
+            border-left: 3px solid var(--primary-color);
+            border-radius: 2px;
             font-size: 13px;
-            text-align: center;
+            text-align: left;
             color: #666;
+        }
+
+        .option strong {
+            color: var(--primary-color);
+            font-weight: 600;
         }
 
         .stats {
             display: flex;
             gap: 10px;
             margin-bottom: 15px;
-            font-size: 13px;
+            font-size: 12px;
         }
 
         .stat {
             flex: 1;
-            padding: 8px;
-            background: #e8f0fe;
-            border-radius: 8px;
+            padding: 10px;
+            background: var(--background-color);
+            border-radius: 2px;
             text-align: center;
-            color: #667eea;
-            font-weight: bold;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-label {
+            font-weight: 600;
+            color: var(--primary-color);
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .stat-value {
+            font-size: 14px;
+            font-weight: 500;
         }
 
         .view-btn {
             width: 100%;
             padding: 10px;
-            background: #667eea;
+            background: var(--primary-color);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 4px;
             cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s ease;
         }
 
         .view-btn:hover {
-            background: #764ba2;
+            opacity: 0.9;
+            transform: translateY(-1px);
         }
 
         .empty-message {
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 60px 20px;
             text-align: center;
-            color: white;
-            font-size: 18px;
-            padding: 40px;
+            color: #999;
+            font-size: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        @media (max-width: 768px) {
+            .questions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <h1>🤔 Either Questions</h1>
-
-    <div class="button-container">
-        <a href="/questions/new" class="btn">➕ 새 질문 생성</a>
+<!-- 네비게이션 바 -->
+<nav class="navbar">
+    <div class="navbar-container">
+        <a href="/" class="navbar-logo">
+            🏆 gonglee
+        </a>
+        <ul class="navbar-menu" id="navbarMenu">
+            <li><a href="/">이상형 월드컵</a></li>
+            <li><a href="/questions" class="active">질문 목록</a></li>
+            <li><a href="/questions/new">질문 생성</a></li>
+        </ul>
+        <button class="navbar-toggle" id="navbarToggle">☰</button>
     </div>
+</nav>
 
-    <div th:if="${questions.isEmpty()}" class="empty-message">
-        질문이 없습니다. 새 질문을 생성해주세요!
-    </div>
+<div class="main-content">
+    <div class="container">
+        <h1>🤔 질문 목록</h1>
+        <p class="page-subtitle">다양한 질문에 투표하고 당신의 의견을 나누세요</p>
 
-    <div th:if="${!questions.isEmpty()}" class="questions-grid">
-        <div th:each="question : ${questions}" class="question-card">
-            <a th:href="@{/questions/{id}(id=${question.id})}">
-                <div class="question-title" th:text="${question.title}"></div>
+        <div class="button-container">
+            <a href="/questions/new" class="btn-create">➕ 새 질문 생성</a>
+        </div>
 
-                <div class="options">
-                    <div class="option">
-                        <strong>A:</strong> <span th:text="${#strings.abbreviate(question.optionA, 30)}"></span>
+        <div th:if="${questions.isEmpty()}" class="empty-message">
+            질문이 없습니다. 새 질문을 생성해주세요!
+        </div>
+
+        <div th:if="${!questions.isEmpty()}" class="questions-grid">
+            <div th:each="question : ${questions}" class="question-card">
+                <a th:href="@{/questions/{id}(id=${question.id})}">
+                    <div class="question-title" th:text="${question.title}"></div>
+
+                    <div class="options">
+                        <div class="option">
+                            <strong>A:</strong> <span th:text="${#strings.abbreviate(question.optionA, 40)}"></span>
+                        </div>
+                        <div class="option">
+                            <strong>B:</strong> <span th:text="${#strings.abbreviate(question.optionB, 40)}"></span>
+                        </div>
                     </div>
-                    <div class="option">
-                        <strong>B:</strong> <span th:text="${#strings.abbreviate(question.optionB, 30)}"></span>
-                    </div>
-                </div>
 
-                <div class="stats">
-                    <div class="stat">
-                        A: <span th:text="${question.countA}"></span> (<span th:text="${#numbers.formatDecimal(question.percentageA, 1, 1)}"></span>%)
+                    <div class="stats">
+                        <div class="stat">
+                            <span class="stat-label">A</span>
+                            <span class="stat-value">
+                                <span th:text="${question.countA}"></span> 표
+                                (<span th:text="${#numbers.formatDecimal(question.percentageA, 1, 1)}"></span>%)
+                            </span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">B</span>
+                            <span class="stat-value">
+                                <span th:text="${question.countB}"></span> 표
+                                (<span th:text="${#numbers.formatDecimal(question.percentageB, 1, 1)}"></span>%)
+                            </span>
+                        </div>
                     </div>
-                    <div class="stat">
-                        B: <span th:text="${question.countB}"></span> (<span th:text="${#numbers.formatDecimal(question.percentageB, 1, 1)}"></span>%)
-                    </div>
-                </div>
-            </a>
+                </a>
 
-            <button class="view-btn" onclick="location.href='/questions/' + this.closest('.question-card').querySelector('a').href.split('/').pop()">
-                자세히 보기
-            </button>
+                <button class="view-btn" th:onclick="'location.href=\'/questions/' + ${question.id} + '\''" type="button">
+                    자세히 보기 →
+                </button>
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+    const navbarToggle = document.getElementById('navbarToggle');
+    const navbarMenu = document.getElementById('navbarMenu');
+
+    navbarToggle.addEventListener('click', () => {
+        navbarMenu.classList.toggle('active');
+    });
+
+    document.querySelectorAll('.navbar-menu a').forEach(link => {
+        link.addEventListener('click', () => {
+            navbarMenu.classList.remove('active');
+        });
+    });
+</script>
 </body>
 </html>

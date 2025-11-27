@@ -33,7 +33,10 @@ public class Question {
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Answer> answers = new ArrayList<>();
-    
+
+    private int countA;
+    private int countB;
+
     public long getCountA() {
         return answers.stream()
                 .filter(a -> "A".equals(a.getAnswerText()))

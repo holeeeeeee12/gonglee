@@ -14,23 +14,23 @@ import java.util.List;
 @RequestMapping("/questions")
 @RequiredArgsConstructor
 public class QuestionController {
-    
+
     private final QuestionService questionService;
     private final AnswerService answerService;
-    
+
     @GetMapping
     public String getQuestions(Model model) {
         List<Question> questions = questionService.getAllQuestions();
         model.addAttribute("questions", questions);
         return "questions/list";
     }
-    
+
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("question", new Question());
         return "questions/create";
     }
-    
+
     @PostMapping
     public String createQuestion(
             @RequestParam String title,
@@ -39,14 +39,14 @@ public class QuestionController {
         questionService.createQuestion(title, optionA, optionB);
         return "redirect:/questions";
     }
-    
+
     @GetMapping("/{id}")
     public String getQuestionDetail(@PathVariable Long id, Model model) {
         Question question = questionService.getQuestionById(id);
         model.addAttribute("question", question);
         return "questions/detail";
     }
-    
+
     @PostMapping("/{id}/answers")
     public String createAnswer(
             @PathVariable Long id,
@@ -55,7 +55,7 @@ public class QuestionController {
         answerService.createAnswer(id, answerText, content);
         return "redirect:/questions/" + id;
     }
-    
+
     @GetMapping("/random")
     public String getRandomQuestion(Model model) {
         Question question = questionService.getRandomQuestion();

@@ -35,14 +35,14 @@ public class WorldCupController {
             @RequestParam(name = "cat") String category
     ) {
         List<Candidate> candidates = candidateStore.findByTournamentAndCategory(tournament, category);
-        
+
         if (candidates.size() < 2) {
             throw new IllegalArgumentException("최소 2명 이상이어야 합니다");
         }
 
         int idx1 = random.nextInt(candidates.size());
         int idx2 = random.nextInt(candidates.size());
-        
+
         while (idx1 == idx2) {
             idx2 = random.nextInt(candidates.size());
         }
