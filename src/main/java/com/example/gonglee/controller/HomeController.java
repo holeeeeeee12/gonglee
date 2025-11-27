@@ -6,11 +6,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HomeController {
 
-    // 기존 "/" 경로를 "/home"으로 변경
     @GetMapping("/")
-    public String home() {
-        return "home";  // home.html이 있다면
+    public String root() {
+        return "redirect:/worldcup"; // /worldcup으로 리다이렉트
     }
 
-    // 또는 아예 삭제하고 싶다면 메서드를 지워도 됨
+    @GetMapping("/home")
+    public String home() {
+        return "redirect:/worldcup"; // /worldcup으로 리다이렉트
+    }
+
+    @GetMapping("/worldcup")
+    public String worldcup() {
+        return "worldcup"; // src/main/resources/templates/worldcup.html 반환
+    }
 }
