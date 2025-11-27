@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이상형 월드컵</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .home-page {
+            text-align: center;
+        }
+
+        .home-page h1 {
+            font-size: 3em;
+            color: #667eea;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .home-page p {
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 50px;
+        }
+
+        .selection-group {
+            margin-bottom: 40px;
+        }
+
+        .selection-group h2 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .btn:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .start-btn {
+            padding: 18px 60px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 30px;
+        }
+
+        .start-btn:hover:not(:disabled) {
+            background: #764ba2;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .start-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .worldcup-page {
+            display: none;
+        }
+
+        .worldcup-page.active {
+            display: block;
+        }
+
+        .round-info {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .round-info h2 {
+            font-size: 24px;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .round-info p {
+            color: #999;
+            font-size: 14px;
+        }
+
+        .battle-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .candidate-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #f9fafc 100%);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+        }
+
+        .candidate-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            border-color: #667eea;
+        }
+
+        .candidate-card.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .candidate-image {
+            width: 100%;
+            height: 250px;
+            background: #ddd;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            object-fit: cover;
+        }
+
+        .candidate-name {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .candidate-info {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .next-btn {
+            padding: 15px 40px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .next-btn:hover:not(:disabled) {
+            background: #764ba2;
+        }
+
+        .next-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .result-page {
+            display: none;
+            text-align: center;
+        }
+
+        .result-page.active {
+            display: block;
+        }
+
+        .result-page h1 {
+            font-size: 2.5em;
+            color: #667eea;
+            margin-bottom: 30px;
+        }
+
+        .winner-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+
+        .winner-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            object-fit: cover;
+            border: 5px solid white;
+        }
+
+        .winner-name {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .winner-info {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .trophy {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .restart-btn {
+            padding: 15px 40px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .restart-btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            .battle-container {
+                gap: 20px;
+            }
+
+            .candidate-image {
+                height: 200px;
+            }
+
+            .home-page h1 {
+                font-size: 2em;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="home-page" id="homePage">
+            <h1>🏆 이상형 월드컵</h1>
+            <p>당신의 이상형을 찾아보세요!</p>
+
+            <div class="selection-group">
+                <h2>성별 선택</h2>
+                <div class="button-group">
+                    <button class="btn" data-gender="male">👨 남성</button>
+                    <button class="btn" data-gender="female">👩 여성</button>
+                </div>
+            </div>
+
+            <div class="selection-group">
+                <h2>카테고리 선택</h2>
+                <div class="button-group">
+                    <button class="btn" data-category="idol">⭐ 아이돌</button>
+                    <button class="btn" data-category="actor">🎬 배우</button>
+                </div>
+            </div>
+
+            <button class="start-btn" id="startBtn" disabled>시작하기</button>
+        </div>
+
+        <div class="worldcup-page" id="worldcupPage">
+            <div class="round-info">
+                <h2 id="roundTitle">32강</h2>
+                <p id="roundDesc">두 명 중 더 좋아하는 사람을 선택하세요</p>
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>로딩 중...</p>
+            </div>
+
+            <div class="battle-container" id="battleContainer">
+                <div class="candidate-card" id="card1" data-index="0">
+                    <img class="candidate-image" id="image1" src="" alt="">
+                    <div class="candidate-name" id="name1"></div>
+                    <div class="candidate-info" id="info1"></div>
+                </div>
+
+                <div class="candidate-card" id="card2" data-index="1">
+                    <img class="candidate-image" id="image2" src="" alt="">
+                    <div class="candidate-name" id="name2"></div>
+                    <div class="candidate-info" id="info2"></div>
+                </div>
+            </div>
+
+            <button class="next-btn" id="nextBtn" disabled>다음</button>
+        </div>
+
+        <div class="result-page" id="resultPage">
+            <h1>🎉 우승자 결정!</h1>
+            
+            <div class="winner-card">
+                <div class="trophy">🏆</div>
+                <img class="winner-image" id="winnerImage" src="" alt="">
+                <div class="winner-name" id="winnerName"></div>
+                <div class="winner-info" id="winnerInfo"></div>
+            </div>
+
+            <button class="restart-btn" id="restartBtn">다시 시작하기</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedGender = null;
+        let selectedCategory = null;
+        let candidates = [];
+        let currentRound = [];
+        let selectedCandidate = null;
+        let roundCount = 1;
+
+        const API_BASE = 'http://localhost:8080/api/worldcup'\;
+
+        const genderBtns = document.querySelectorAll('[data-gender]');
+        const categoryBtns = document.querySelectorAll('[data-category]');
+        const startBtn = document.getElementById('startBtn');
+
+        genderBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                genderBtns.forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                selectedGender = e.target.dataset.gender;
+                updateStartBtn();
+            });
+        });
+
+        categoryBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                categoryBtns.forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                selectedCategory = e.target.dataset.category;
+                updateStartBtn();
+            });
+        });
+
+        function updateStartBtn() {
+            startBtn.disabled = !selectedGender || !selectedCategory;
+        }
+
+        startBtn.addEventListener('click', startTournament);
+
+        async function startTournament() {
+            try {
+                showLoading(true);
+                document.getElementById('homePage').style.display = 'none';
+                document.getElementById('worldcupPage').classList.add('active');
+
+                const response = await fetch(
+                    `${API_BASE}/start?tour=${selectedGender}&cat=${selectedCategory}`
+                );
+                candidates = await response.json();
+
+                currentRound = [...candidates];
+                roundCount = 1;
+                loadNextMatchup();
+            } catch (error) {
+                console.error('Error:', error);
+                alert('데이터를 불러올 수 없습니다');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function loadNextMatchup() {
+            if (currentRound.length === 1) {
+                showWinner(currentRound[0]);
+                return;
+            }
+
+            const roundName = getRoundName(currentRound.length);
+            document.getElementById('roundTitle').textContent = roundName;
+            document.getElementById('roundDesc').textContent = 
+                `${currentRound.length}명 중 더 좋아하는 사람을 선택하세요`;
+
+            const idx1 = Math.floor(Math.random() * currentRound.length);
+            let idx2 = Math.floor(Math.random() * currentRound.length);
+            while (idx1 === idx2) {
+                idx2 = Math.floor(Math.random() * currentRound.length);
+            }
+
+            const candidate1 = currentRound[idx1];
+            const candidate2 = currentRound[idx2];
+
+            displayCandidate('1', candidate1);
+            displayCandidate('2', candidate2);
+
+            selectedCandidate = null;
+            document.getElementById('card1').classList.remove('selected');
+            document.getElementById('card2').classList.remove('selected');
+            document.getElementById('nextBtn').disabled = true;
+
+            document.getElementById('card1').onclick = () => selectCandidate(candidate1, 'card1');
+            document.getElementById('card2').onclick = () => selectCandidate(candidate2, 'card2');
+        }
+
+        function displayCandidate(num, candidate) {
+            document.getElementById(`image${num}`).src = candidate.image_url;
+            document.getElementById(`name${num}`).textContent = candidate.name;
+            document.getElementById(`info${num}`).textContent = candidate.group_or_work;
+        }
+
+        function selectCandidate(candidate, cardId) {
+            selectedCandidate = candidate;
+            
+            document.getElementById('card1').classList.remove('selected');
+            document.getElementById('card2').classList.remove('selected');
+            document.getElementById(cardId).classList.add('selected');
+            
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            if (selectedCandidate) {
+                const idx = currentRound.findIndex(c => c.id !== selectedCandidate.id);
+                if (idx > -1) {
+                    currentRound.splice(idx, 1);
+                }
+                
+                roundCount++;
+                loadNextMatchup();
+            }
+        });
+
+        function getRoundName(count) {
+            const roundMap = {
+                32: '32강',
+                16: '16강',
+                8: '8강',
+                4: '4강',
+                2: '결승',
+                1: '우승자'
+            };
+            return roundMap[count] || `${count}강`;
+        }
+
+        function showWinner(winner) {
+            document.getElementById('worldcupPage').classList.remove('active');
+            document.getElementById('resultPage').classList.add('active');
+            
+            document.getElementById('winnerImage').src = winner.image_url;
+            document.getElementById('winnerName').textContent = winner.name;
+            document.getElementById('winnerInfo').textContent = winner.group_or_work;
+        }
+
+        document.getElementById('restartBtn').addEventListener('click', () => {
+            selectedGender = null;
+            selectedCategory = null;
+            candidates = [];
+            currentRound = [];
+            selectedCandidate = null;
+            roundCount = 1;
+
+            genderBtns.forEach(b => b.classList.remove('active'));
+            categoryBtns.forEach(b => b.classList.remove('active'));
+            
+            document.getElementById('homePage').style.display = 'block';
+            document.getElementById('worldcupPage').classList.remove('active');
+            document.getElementById('resultPage').classList.remove('active');
+            
+            updateStartBtn();
+        });
+
+        function showLoading(show) {
+            document.getElementById('loading').classList.toggle('active', show);
+        }
+    </script>
+</body>
+</html>
